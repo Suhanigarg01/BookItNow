@@ -21,17 +21,19 @@ export const getNowPlayingMovies = async (req, res)=>{
 // API to get upcoming movies from TMDB API
 export const getUpcomingMovies = async (req, res)=>{
     try {
-        const { data } = await axios.get('https://api.themoviedb.org/3/movie/upcoming', {
-            headers: {Authorization : `Bearer ${process.env.TMDB_API_KEY}`}
-        })
-
         const today = new Date().toISOString().split('T')[0];
 
-        const movies = data.results
-            .filter((movie) => movie.release_date && movie.release_date >= today)
-            .sort((a, b) => a.release_date.localeCompare(b.release_date));
+        const { data } = await axios.get('https://api.themoviedb.org/3/discover/movie', {
+            headers: {Authorization : `Bearer ${process.env.TMDB_API_KEY}`},
+            params: {
+                sort_by: 'primary_release_date.asc',
+                'primary_release_date.gte': today,
+                include_adult: false,
+                with_release_type: '2|3', // theatrical (limited + wide) releases only
+            }
+        })
 
-        res.json({success: true, movies: movies})
+        res.json({success: true, movies: data.results})
     } catch (error) {
         console.error(error);
         res.json({success: false, message: error.message})
