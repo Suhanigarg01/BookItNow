@@ -1,5 +1,5 @@
 import express from "express";
-import { addShow, getNowPlayingMovies, getShow, getShows } from "../controllers/showController.js";
+import { addShow, getNowPlayingMovies, getShow, getShows, getUpcomingMovies } from "../controllers/showController.js";
 import { protectAdmin } from "../middleware/auth.js";
 
 const showRouter = express.Router();
