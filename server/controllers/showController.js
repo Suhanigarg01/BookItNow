@@ -25,7 +25,12 @@ export const getUpcomingMovies = async (req, res)=>{
             headers: {Authorization : `Bearer ${process.env.TMDB_API_KEY}`}
         })
 
-        const movies = data.results;
+        const today = new Date().toISOString().split('T')[0];
+
+        const movies = data.results
+            .filter((movie) => movie.release_date && movie.release_date >= today)
+            .sort((a, b) => a.release_date.localeCompare(b.release_date));
+
         res.json({success: true, movies: movies})
     } catch (error) {
         console.error(error);
